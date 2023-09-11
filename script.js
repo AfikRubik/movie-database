@@ -66,9 +66,11 @@ searchButton.addEventListener('click', async function () {
   updateUI(movies);
 });
 
-document.addEventListener('click', function (element) {
+document.addEventListener('click', async function (element) {
   if (element.target.classList.contains('modal-detail-button')) {
-    console.log('bisa');
+    const imdbid = element.target.dataset.imdbid;
+    const movieDetails = await getMovieDetails(imdbid);
+    updateUIDetail(movieDetails);
   }
 })
 
@@ -86,6 +88,19 @@ function updateUI(response) {
   const movieContainer = document.querySelector('.movie-infos');
   movieContainer.innerHTML = cards;
 }
+
+function getMovieDetails(imdbid) {
+  return fetch('http://www.omdbapi.com/?apikey=748bf854&i=' + imdbid)
+    .then(response => response.json())
+    .then(result => result);
+}
+
+function updateUIDetail(result) {
+  const movieDetails = showMovieDetails(result);
+  const movieDetailContainer = document.querySelector('.detail-film');
+  movieDetailContainer.innerHTML = movieDetails;
+}
+
 
 // HTML Syntax Functions
 function showCards(result) {
